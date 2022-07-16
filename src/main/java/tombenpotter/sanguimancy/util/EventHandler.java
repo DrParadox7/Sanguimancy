@@ -27,6 +27,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
+import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.common.ForgeChunkManager;
@@ -34,6 +35,7 @@ import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.EntityStruckByLightningEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.event.entity.living.LivingSpawnEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.event.world.BlockEvent;
@@ -52,8 +54,10 @@ import tombenpotter.sanguimancy.registry.SanguimancyGuide;
 import tombenpotter.sanguimancy.tile.TileCamouflageBound;
 import tombenpotter.sanguimancy.tile.TileItemSNPart;
 import tombenpotter.sanguimancy.tile.TileRitualSNPart;
+import tombenpotter.sanguimancy.util.ConfigHandler;
 import tombenpotter.sanguimancy.util.singletons.BoundItems;
 import tombenpotter.sanguimancy.util.singletons.ClaimedChunks;
+
 
 import java.util.ArrayList;
 
@@ -168,6 +172,14 @@ public class EventHandler {
             syncCorruption(event.player);
         }
     }
+
+    @SubscribeEvent
+    public void spawn(final LivingSpawnEvent.CheckSpawn event) {
+        if (event.world.provider.dimensionId == ConfigHandler.snDimID) {
+            event.setResult(Event.Result.DENY);
+        }
+    }
+
 
     @SubscribeEvent
     public void onPlayerAttack(AttackEntityEvent event) {
